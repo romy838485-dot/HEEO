@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>제3장 총괄연구개발과제의 최종 연구개발 결과</title>
+  <style>
+    :root { --paper-w: 210mm; --paper-h: 297mm; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #e9eaec; color: #111; }
+    body {
+      font-family: "Batang", "바탕", "Noto Serif KR", "Times New Roman", serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .toolbar {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; justify-content: center; gap: 8px; align-items: center;
+      padding: 10px; background: rgba(30,33,38,.94);
+      font-family: system-ui, sans-serif; color: white;
+      box-shadow: 0 2px 8px #0003;
+    }
+    .toolbar button, .toolbar label {
+      border: 0; border-radius: 7px; padding: 8px 13px;
+      background: #fff; color: #222; font-size: 13px; cursor: pointer;
+    }
+    .toolbar .hint { font-size: 12px; opacity: .78; margin-left: 6px; }
+    #figureFile { display: none; }
+    .page {
+      width: var(--paper-w); height: var(--paper-h);
+      margin: 18px auto; padding: 36mm 22.5mm 14mm;
+      background: white; box-shadow: 0 3px 18px #0003;
+      position: relative; overflow: hidden;
+      font-size: 8.45pt; line-height: 1.82;
+      letter-spacing: -.08em;
+    }
+    [contenteditable="true"]:focus { outline: 1px dashed #7aa7df; outline-offset: 3px; }
+    h1 {
+      margin: 0 0 9.2mm; font-size: 12.2pt; line-height: 1.25;
+      font-weight: 700; letter-spacing: -.06em;
+    }
+    figure { width: 149.5mm; margin: 0 auto 5.2mm; }
+    .figure-crop {
+      width: 149.5mm; height: 73.5mm; position: relative; overflow: hidden;
+      border: .28mm solid #555; background: #fff;
+    }
+    .figure-crop img {
+      position: absolute;
+      width: 210mm; height: 297mm;
+      max-width: none;
+      left: -29.2mm; top: -53.4mm;
+      user-select: none;
+    }
+    figcaption {
+      margin-top: 1.3mm; font-size: 7.3pt; line-height: 1.2;
+      letter-spacing: -.05em;
+    }
+    p { margin: 0 0 4.7mm; text-align: justify; text-indent: 0; }
+    h2 {
+      font-size: 10pt; line-height: 1.25; margin: 6.5mm 0 5.1mm;
+      font-weight: 700; letter-spacing: -.06em;
+    }
+    .lead { margin-bottom: 2.1mm; }
+    .indent { padding-left: 5.2mm; text-indent: -1.7mm; }
+    .footer {
+      position: absolute; left: 22.5mm; right: 22.5mm; bottom: 9.2mm;
+      height: 5mm; border-bottom: .25mm solid #aaa;
+      display: flex; align-items: flex-end; gap: 7mm;
+      font-size: 5.8pt; color: #555; letter-spacing: 0;
+    }
+    .page-no {
+      border: .2mm solid #b8b8b8; padding: .1mm 1.2mm;
+      color: #444; background: #fafafa;
+    }
+    .figure-crop::after {
+      content: "클릭하여 표 이미지 교체";
+      position: absolute; inset: auto 3mm 3mm auto;
+      background: #111b; color: white; padding: 1.2mm 2mm;
+      border-radius: 1mm; font: 9px system-ui, sans-serif; opacity: 0;
+      transition: opacity .15s;
+    }
+    .figure-crop:hover::after { opacity: 1; }
+    @page { size: A4 portrait; margin: 0; }
+    @media print {
+      html, body { background: white; }
+      .toolbar { display: none !important; }
+      .page { margin: 0; box-shadow: none; }
+      [contenteditable="true"]:focus { outline: none; }
+      .figure-crop::after { display: none; }
+    }
+    @media (max-width: 850px) {
+      .page { transform-origin: top left; }
+      .toolbar .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">PDF로 저장 / 인쇄</button>
+    <button type="button" onclick="downloadHtml()">편집본 HTML 저장</button>
+    <label for="figureFile" role="button" tabindex="0">표 이미지 활성화 / 교체</label>
+    <input id="figureFile" type="file" accept="image/*">
+    <span class="hint">점선이 나타나는 글자를 클릭하면 바로 수정할 수 있습니다.</span>
+  </div>
+
+  <main class="page" id="page">
+    <h1 contenteditable="true" spellcheck="false">제3장 총괄연구개발과제의 최종 연구개발 결과</h1>
+
+    <figure>
+      <div class="figure-crop" id="figureBox" title="클릭해서 표 이미지를 교체하세요">
+        <img id="figureImage"
+             src="./figure-source.png"
+             alt="수막형광등에 대한 베트남어 작업예시">
+      </div>
+      <figcaption contenteditable="true" spellcheck="false">(Figure 1. 수막형광등에 대한 베트남어 작업예시)</figcaption>
+    </figure>
+
+    <section contenteditable="true" spellcheck="false">
+      <p>위의 그림은 수막형광등이란 수막형 용어자료를 베트남어 번역대상에 대해 표현한다. 그림 안의 표기는 피코그램화되어있는 수막형광등이 용어별 자료를 비교하기 위한 분류항목이며, 각국언어는 기존 용어들과 차이 또는 독자사항을 기록한 것이다. 파란색에는 수막형 용어였고, 회색음영에 및 기존의 수막형광등이 표기되어 있는 용어이며, 참고사항에는 번역한 용어를 최종 검토사항으로 표시하고 표를 기준으로 이웃·비교하기 위한 내용으로 수록했으며 수막형태의 대상 현황을 총 46,459 여개의 용어를 해당분야의 사용률이 정리되어있어 향후에 이러한 번호, 명어, 항목 번역 내용을 검색하여 준다.</p>
+
+      <h2>3.1 우리말 수막형용어의 제정원칙 및 예시</h2>
+
+      <p class="lead">다음과 같은 원칙을 바탕으로 수막형용어를 신설하였다.</p>
+      <p class="lead">1) 서로 성격의 수막형용어를 제정한다.</p>
+      <p class="indent">수막형태의 용어의 용어제정 원칙에 따라 기존의 용어를 유지할 수 있고 대체하였다. 새로이 제정된 수막형용어들이 적정범위를 가급적 엄수하며, 그곳의 고유한 표현방식으로 한정하지 않는 관점에서만 새로운 용어가 사용되는 경우가 오히려 혼란스럽거나 이해에 걸리는 기존의 용어를 그대로 사용하는 것을 주된 내용으로 하고 있다.</p>
+    </section>
+
+    <footer class="footer">
+      <span class="page-no">362</span>
+      <span>최종연구개발보고서</span>
+    </footer>
+  </main>
+
+  <script>
+    const input = document.getElementById("figureFile");
+    const image = document.getElementById("figureImage");
+    document.getElementById("figureBox").addEventListener("click", () => input.click());
+    document.querySelector('label[for="figureFile"]').addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        input.click();
+      }
+    });
+    image.addEventListener("error", () => {
+      image.alt = "표 이미지를 불러오지 못했습니다. 위의 ‘표 이미지 활성화 / 교체’를 눌러 원본 이미지를 선택하세요.";
+    });
+    input.addEventListener("change", () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        image.src = reader.result;
+        image.style.cssText = "position:absolute;width:100%;height:100%;left:0;top:0;object-fit:fill;max-width:none";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function downloadHtml() {
+      const clone = document.documentElement.cloneNode(true);
+      const sourceImage = document.getElementById("figureImage");
+      const cloneImage = clone.querySelector("#figureImage");
+      if (sourceImage.src.startsWith("data:")) cloneImage.src = sourceImage.src;
+      const html = "<!doctype html>\n" + clone.outerHTML;
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "연구개발_결과_편집본.html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+  </script>
+</body>
+</html>
