@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>클래스 타임키퍼</title>
+  <style>
+    :root{--ink:#e9edf2;--muted:#8d99a6;--gold:#d4a64c;--red:#e45555;--panel:#15191e;--line:#303740}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px 16px;background:
+      radial-gradient(circle at 50% 18%,#313942 0,#171b20 35%,#080a0d 100%);color:var(--ink);
+      font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif}
+    button,input{font:inherit}
+    .app{width:min(1020px,100%);display:grid;grid-template-columns:minmax(320px,1.05fr) minmax(320px,.95fr);
+      gap:28px;align-items:center}
+    .brand{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between}
+    .brand h1{margin:0;font-size:clamp(20px,3vw,30px);letter-spacing:.12em;text-transform:uppercase}
+    .brand span{color:var(--gold);font-size:12px;letter-spacing:.2em}
+    .watch-wrap{position:relative;padding:22px}
+    .crown{position:absolute;right:1px;top:45%;width:30px;height:76px;border-radius:5px;background:
+      repeating-linear-gradient(90deg,#555 0 3px,#24282d 3px 6px);box-shadow:0 0 0 4px #111;z-index:-1}
+    .watch{aspect-ratio:1;border-radius:50%;padding:18px;background:linear-gradient(145deg,#91979c,#20252a 24%,#0b0d10 70%,#777);
+      box-shadow:0 28px 70px #000c,inset 0 0 0 2px #bbc0c344}
+    .dial{height:100%;border-radius:50%;position:relative;display:grid;place-items:center;overflow:hidden;background:
+      radial-gradient(circle at 48% 38%,#22282d 0,#0d1013 55%,#030405 100%);box-shadow:inset 0 0 35px #000,inset 0 0 0 3px #b68b3f}
+    .ticks{position:absolute;inset:8px;border-radius:50%;background:repeating-conic-gradient(from -1deg,#d8dce0 0 1deg,transparent 1deg 6deg);
+      -webkit-mask:radial-gradient(circle,transparent 0 83%,#000 84%);mask:radial-gradient(circle,transparent 0 83%,#000 84%)}
+    .tick-major{position:absolute;inset:13px;border-radius:50%;background:repeating-conic-gradient(#d4a64c 0 2deg,transparent 2deg 30deg);
+      -webkit-mask:radial-gradient(circle,transparent 0 78%,#000 79%);mask:radial-gradient(circle,transparent 0 78%,#000 79%)}
+    .display{text-align:center;position:relative;z-index:2;transform:translateY(5px)}
+    .mode-label{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.22em;margin-bottom:10px}
+    .time{font-variant-numeric:tabular-nums;font-size:clamp(47px,7vw,72px);font-weight:300;letter-spacing:-.06em;text-shadow:0 0 25px #d4a64c33}
+    .sub{height:23px;margin-top:8px;color:var(--muted);font-size:13px}
+    .hand{position:absolute;left:50%;bottom:50%;width:2px;height:39%;background:linear-gradient(var(--red),#851d1d);transform-origin:50% 100%;
+      transform:rotate(0deg);box-shadow:0 0 9px #e45555;transition:transform .15s linear;z-index:3}
+    .pin{position:absolute;width:14px;height:14px;border:3px solid #ddd;border-radius:50%;background:var(--red);z-index:4}
+    .panel{background:linear-gradient(145deg,#1c2127,#101317);border:1px solid #353c44;border-radius:24px;padding:24px;
+      box-shadow:0 26px 65px #0008}
+    .preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:20px}
+    .preset{border:1px solid var(--line);border-radius:14px;padding:13px 5px;background:#0e1114;color:var(--ink);cursor:pointer;transition:.2s}
+    .preset:hover,.preset.active{border-color:var(--gold);background:#d4a64c12;transform:translateY(-2px)}
+    .preset b{display:block;font-size:15px}.preset small{color:var(--muted)}
+    .settings{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;display:grid;gap:10px}
+    .setting{display:grid;grid-template-columns:1fr 84px 26px;align-items:center;gap:8px;color:#c7cdd4;font-size:14px}
+    input{width:100%;background:#090b0d;color:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+    .control{border:0;border-radius:13px;padding:14px;cursor:pointer;font-weight:800}
+    .start{background:var(--gold);color:#18130a}.reset{background:#2a3037;color:#fff}
+    .stopwatch{margin-top:14px;width:100%;border:1px solid var(--line);background:transparent;color:#dbe1e7;border-radius:13px;padding:12px;cursor:pointer}
+    .hint{margin:15px 0 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.5}
+    .alarm{animation:alarm .55s ease-in-out infinite alternate}
+    @keyframes alarm{to{box-shadow:0 0 0 8px #e4555530,0 0 70px #e45555aa}}
+    @media(max-width:760px){.app{grid-template-columns:1fr;max-width:520px}.brand{padding:0 7px}.watch-wrap{padding:12px}.panel{padding:18px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="brand"><h1>Class Timekeeper</h1><span>FOCUS · REST · SPEAK</span></header>
+    <section class="watch-wrap" aria-label="타이머 시계">
+      <i class="crown"></i>
+      <div class="watch" id="watch">
+        <div class="dial">
+          <div class="ticks"></div><div class="tick-major"></div>
+          <div class="hand" id="hand"></div><div class="pin"></div>
+          <div class="display">
+            <div class="mode-label" id="modeLabel">강의 시간</div>
+            <div class="time" id="time">50:00</div>
+            <div class="sub" id="sub">시작할 준비가 되었습니다</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="preset-grid">
+        <button class="preset active" data-mode="lecture"><b>강의</b><small><span id="lectureMini">50</span>분</small></button>
+        <button class="preset" data-mode="break"><b>쉬는 시간</b><small><span id="breakMini">10</span>분</small></button>
+        <button class="preset" data-mode="presentation"><b>발표</b><small><span id="presentationMini">5</span>분</small></button>
+      </div>
+      <div class="settings">
+        <label class="setting"><span>강의 시간</span><input id="lectureInput" type="number" min="1" max="180" value="50"><span>분</span></label>
+        <label class="setting"><span>쉬는 시간</span><input id="breakInput" type="number" min="1" max="60" value="10"><span>분</span></label>
+        <label class="setting"><span>발표 시간</span><input id="presentationInput" type="number" min="1" max="120" value="5"><span>분</span></label>
+      </div>
+      <div class="controls">
+        <button class="control start" id="start">시작</button>
+        <button class="control reset" id="reset">초기화</button>
+      </div>
+      <button class="stopwatch" id="stopwatch">스톱워치로 전환</button>
+      <p class="hint">시간이 끝나면 알람음과 화면 점멸로 알려드립니다.<br>스페이스바로 시작·일시정지할 수 있어요.</p>
+    </section>
+  </main>
+  <script>
+    const modes={
+      lecture:{name:'강의 시간',input:'lectureInput'},
+      break:{name:'쉬는 시간',input:'breakInput'},
+      presentation:{name:'발표 시간',input:'presentationInput'}
+    };
+    let mode='lecture', running=false, stopwatch=false, remaining=3000, elapsed=0, timer=null, endAt=0;
+    const $=id=>document.getElementById(id);
+    const format=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    function duration(){return Math.max(1,Number($(modes[mode].input).value)||1)*60}
+    function render(){
+      const seconds=stopwatch?elapsed:remaining;
+      $('time').textContent=format(seconds);
+      $('modeLabel').textContent=stopwatch?'스톱워치':modes[mode].name;
+      $('start').textContent=running?'일시정지':'시작';
+      $('sub').textContent=running?(stopwatch?'시간을 기록하고 있습니다':'집중하는 시간입니다'):'시작할 준비가 되었습니다';
+      const basis=stopwatch?60:duration(), progress=stopwatch?(elapsed%60)/60:1-remaining/basis;
+      $('hand').style.transform=`rotate(${progress*360}deg)`;
+    }
+    function reset(){
+      clearInterval(timer);running=false;elapsed=0;remaining=duration();$('watch').classList.remove('alarm');render();
+    }
+    function soundAlarm(){
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      [0,.25,.5,.9,1.15,1.4].forEach((t,i)=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=i<3?880:660;
+        g.gain.setValueAtTime(.0001,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.22,ctx.currentTime+t+.02);
+        g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+t+.18);o.connect(g).connect(ctx.destination);
+        o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.2);
+      });
+    }
+    function finish(){
+      clearInterval(timer);running=false;remaining=0;$('watch').classList.add('alarm');$('sub').textContent='시간이 끝났습니다!';
+      soundAlarm();render();$('sub').textContent='시간이 끝났습니다!';
+      setTimeout(()=>$('watch').classList.remove('alarm'),5000);
+    }
+    function toggle(){
+      if(running){clearInterval(timer);running=false;render();return}
+      $('watch').classList.remove('alarm');running=true;
+      endAt=Date.now()+1000;
+      timer=setInterval(()=>{
+        if(Date.now()<endAt)return; endAt+=1000;
+        if(stopwatch)elapsed++; else if(--remaining<=0){finish();return}
+        render();
+      },100);
+      render();
+    }
+    document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>{
+      stopwatch=false;mode=btn.dataset.mode;
+      document.querySelectorAll('.preset').forEach(x=>x.classList.toggle('active',x===btn));$('stopwatch').textContent='스톱워치로 전환';reset();
+    }));
+    Object.entries(modes).forEach(([key,val])=>$(val.input).addEventListener('change',()=>{
+      const n=Math.min(180,Math.max(1,Number($(val.input).value)||1));$(val.input).value=n;$(key+'Mini').textContent=n;
+      localStorage.setItem('classTimer_'+key,n);if(key===mode&&!stopwatch)reset();
+    }));
+    Object.entries(modes).forEach(([key,val])=>{const saved=localStorage.getItem('classTimer_'+key);if(saved){$(val.input).value=saved;$(key+'Mini').textContent=saved}});
+    $('start').addEventListener('click',toggle);$('reset').addEventListener('click',reset);
+    $('stopwatch').addEventListener('click',()=>{
+      stopwatch=!stopwatch;$('stopwatch').textContent=stopwatch?'타이머로 돌아가기':'스톱워치로 전환';reset();
+    });
+    addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','BUTTON'].includes(document.activeElement.tagName)){e.preventDefault();toggle()}});
+    reset();
+  </script>
+</body>
+</html>
